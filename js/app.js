@@ -127,6 +127,11 @@
 
   function renderSight(sight, ctx) {
     ctx = ctx || {};
+    /* A sight can appear in more than one view (Itinerary and Now). Prefix the
+       element ids per view so the two copies never collide — otherwise
+       getElementById resolves to whichever was rendered first and the
+       accordion in front of the user appears to do nothing. */
+    const pfx = ctx.prefix || '';
     const dimmed = state.late && (sight.optional || sight.skipIfLate) ? ' is-dimmed' : '';
     const missCls = sight.doNotMiss ? ' sight--miss' : '';
 
@@ -136,7 +141,7 @@
     if (sight.coordsApprox && !sight.isNote) tags += '<span class="badge badge--approx">Approx pin</span>';
     if (sight.duration && sight.duration !== '—') tags += '<span class="badge badge--time">' + esc(sight.duration) + '</span>';
 
-    let h = '<article class="sight' + missCls + dimmed + '" id="sight-' + esc(sight.id) + '">';
+    let h = '<article class="sight' + missCls + dimmed + '" id="sight-' + esc(pfx + sight.id) + '">';
 
     /* Head */
     h += '<div class="sight__head">';
@@ -197,7 +202,7 @@
                     (sight.etiquette && sight.etiquette.length);
 
     if (hasDeep && !ctx.noAccordion) {
-      const pid = 'acc-' + sight.id;
+      const pid = 'acc-' + pfx + sight.id;
       h += '<div class="acc">';
       h += '<button class="acc__btn" type="button" aria-expanded="false" aria-controls="' + pid + '">' +
            '<span>Tell me more</span><span class="acc__chev" aria-hidden="true">' + ICONS.chev + '</span></button>';
@@ -498,7 +503,7 @@
       h += '<div class="section" style="margin-top:22px"><div class="section__head">' +
            '<h2 class="section__title">What to see here</h2>' +
            '<span class="section__hint">' + sights.length + ' sights</span></div>';
-      sights.forEach(function (s) { h += renderSight(s); });
+      sights.forEach(function (s) { h += renderSight(s, { prefix: 'now-' }); });
       h += '</div>';
     }
 
@@ -653,7 +658,12 @@
     document.addEventListener('click', function (e) {
       const accBtn = e.target.closest('.acc__btn');
       if (accBtn) {
-        const panel = document.getElementById(accBtn.getAttribute('aria-controls'));
+        /* Resolve the panel structurally first: the panel is always the
+           button's next sibling. Never depends on ids being unique. */
+        let panel = accBtn.nextElementSibling;
+        if (!panel || !panel.classList.contains('acc__panel')) {
+          panel = document.getElementById(accBtn.getAttribute('aria-controls'));
+        }
         const open = accBtn.getAttribute('aria-expanded') === 'true';
         accBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
         if (panel) panel.hidden = open;
