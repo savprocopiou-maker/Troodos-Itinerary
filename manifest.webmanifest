@@ -1,0 +1,19 @@
+{
+  "name": "Marathasa Valley & Kykkos Day Trip",
+  "short_name": "Marathasa",
+  "description": "A one-day road trip and walking guide from Polis through the Marathasa valley to Kykkos Monastery and the tomb of Archbishop Makarios III.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF6EE",
+  "theme_color": "#FAF6EE",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%231E3D2E'/%3E%3Cpath d='M102 368 L215 174 L297 297 L348 225 L430 368 Z' fill='%23FAF6EE'/%3E%3Ccircle cx='348' cy='133' r='36' fill='%23B8862B'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
